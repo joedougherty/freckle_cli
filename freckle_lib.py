@@ -67,6 +67,11 @@ def get_freckle_project_id(projects_object, cli_id):
 
 def generate_xml_post(minutes, user, project_num, tags='development'):    
     minutes = int(minutes)
+    
+    # if user logs less than 60 seconds, round it up to one minute
+    if minutes == 0:
+        minutes = 1
+
     # convert back to str and append 'm'
     minutes = str(minutes) + 'm' 
     project_num = str(project_num)

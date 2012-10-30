@@ -46,6 +46,9 @@ def get_project_id(all_projects):
     max_proj_num = all_projects[-1][u'project'][u'cli_id']
     
     valid_ids = range(0, max_proj_num + 1)
+    
+    # convert valid_ids to str to test against input
+    valid_ids = [str(x) for x in valid_ids]
 
     while project_id not in valid_ids:
         print "Your input should be a number between 0 and " + str(max_proj_num)
@@ -82,22 +85,32 @@ def generate_xml_post(minutes, user, project_num, tags='development'):
 def time_tracker():
 
     tracker_vals = ['start', 'stop']
-    tracker_prompt = "Enter 'start' to start the timer and 'stop' to stop the timer:"
+    tracker_prompt = "\nEnter: \n - 'start' to start the timer \n - 'stop' to stop the timer \n: "
+
+    # flag to maintain timer state
+    start_has_fired = False
 
     while 1:
         tracker = str(raw_input(tracker_prompt)) 
 
         while not tracker in tracker_vals:
-            print "Please enter either 'start' or 'stop'."
+            print "\nPlease enter a valid command."
             tracker = str(raw_input(tracker_prompt)) 
     
         if tracker == 'start':
-            print 'Tracking time...'
-            start_time = time.time()
+            if start_has_fired == False:
+                print '\n*** Tracking Time ***'
+                start_time = time.time()
+                start_has_fired = True
+            else:
+                print "\nPlease only enter 'start' once."     
     
         if tracker == 'stop':
-            elapsed_time = time.time() - start_time
-            elapsed_time = elapsed_time/60
+            if start_has_fired == True:
+                elapsed_time = time.time() - start_time
+                elapsed_time = elapsed_time/60
 
-            print str(elapsed_time) + " minutes spent on task."
-            return elapsed_time              
+                print str(elapsed_time) + " minutes spent on task."
+                return elapsed_time
+            else:
+                print "\nYou need to start tracking time first." 

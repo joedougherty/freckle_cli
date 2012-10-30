@@ -37,3 +37,5 @@ time_entry = freckle_lib.generate_xml_post(time_spent, user, freckle_project_id)
 
 # make post request
 api_object.create_time_entry(time_entry)
+
+print "New time entry has been created."

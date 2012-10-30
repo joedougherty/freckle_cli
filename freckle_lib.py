@@ -1,5 +1,7 @@
 import requests
 import json
+import time
+import datetime
 
 def print_welcome_message():
     print "\nFreckle CLI v0.1: The Luddite's Preferred Time Tracking Interface.\n"
@@ -27,20 +29,28 @@ class FreckleApi(object):
 
         return projects
 
-   def create_time_entry(self, entry_xml):
+   def create_time_entry(self, xml_entry):
         url = self.base_url + '/entries.xml'
-        headers = {"X-FreckleToken" : "lltpffanobj4a8yzpihmm7xan0al89s", "Content-type" : "text/xml"}
+        headers = {"X-FreckleToken" : self.api_key, "Content-type" : "text/xml"}
         
-        files = {'file': entry_xml}
+        files = {'file': xml_entry}
 
         r = requests.post(url, headers=headers, files=files) 
         return
 
-def get_project_id():
-    project_id = str(input("\nEnter Project#: "))
+def get_project_id(all_projects):
+    get_project_id_prompt = "\nEnter Project #: "
+    project_id = raw_input(get_project_id_prompt)
     
-    #TODO input error checking
-        
+    # get max proj num from all_projects 
+    max_proj_num = all_projects[-1][u'project'][u'cli_id']
+    
+    valid_ids = range(0, max_proj_num + 1)
+
+    while project_id not in valid_ids:
+        print "Your input should be a number between 0 and " + str(max_proj_num)
+        project_id = raw_input(get_project_id_prompt)
+
     return project_id
 
 def print_project_menu(projects_object):
@@ -67,4 +77,27 @@ def generate_xml_post(minutes, user, project_num, tags='development'):
                         <description>''' + tags + '''</description>
                     </entry>
                 '''
-    return xml_post           
+    return xml_post
+    
+def time_tracker():
+
+    tracker_vals = ['start', 'stop']
+    tracker_prompt = "Enter 'start' to start the timer and 'stop' to stop the timer:"
+
+    while 1:
+        tracker = str(raw_input(tracker_prompt)) 
+
+        while not tracker in tracker_vals:
+            print "Please enter either 'start' or 'stop'."
+            tracker = str(raw_input(tracker_prompt)) 
+    
+        if tracker == 'start':
+            print 'Tracking time...'
+            start_time = time.time()
+    
+        if tracker == 'stop':
+            elapsed_time = time.time() - start_time
+            elapsed_time = elapsed_time/60
+
+            print str(elapsed_time) + " minutes spent on task."
+            return elapsed_time              

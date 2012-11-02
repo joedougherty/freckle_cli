@@ -96,8 +96,9 @@ def time_tracker():
     start_has_fired = False
 
     while 1:
-        tracker = str(raw_input(tracker_prompt)) 
 
+        tracker = str(raw_input(tracker_prompt)) 
+        
         while not tracker in tracker_vals:
             print "\nPlease enter a valid command."
             tracker = str(raw_input(tracker_prompt)) 

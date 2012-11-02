@@ -1,3 +1,4 @@
 .freckle
 freckletime.xml
 tests/*
+*.pyc

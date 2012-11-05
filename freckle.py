@@ -3,7 +3,7 @@ from ConfigParser import SafeConfigParser
 import os
 import sys
 
-#open config file
+# open config file
 parser = SafeConfigParser()
 parser.read('.freckle')
 

@@ -38,6 +38,41 @@ class FreckleApi(object):
         r = requests.post(url, headers=headers, files=files) 
         return
 
+   def get_all_users(self):
+        url = self.base_url + '/users.json' 
+        headers = {'X-FreckleToken': self.api_key}
+       
+        r = requests.get(url, headers=headers)
+        all_users = r.json
+
+        return all_users
+
+   def extract_current_user(self, email):
+        all_users_object = self.get_all_users()
+        
+        for users in all_users_object:
+            if users[u'user'][u'email'] == email:
+                return users[u'user'][u'id']
+           
+   def get_time_spent_today(self, user_id):
+        url = self.base_url + '/entries.json' 
+        headers = {'X-FreckleToken': self.api_key}
+
+        search_string = {'search[people]' : str(user_id), 'search[from]' : '2012-11-06'} 
+        
+        r = requests.get(url, headers=headers, params=search_string)
+        all_time_entries = r.json
+       
+        time_spent = 0
+        
+        for entry in all_time_entries:
+            time_spent += int(entry[u'entry'][u'minutes'])
+        
+        # convert minutes to hours
+        time_spent = time_spent / 60
+        
+        return str(time_spent) + " hours logged so far today."
+
 def get_project_id(all_projects):
     get_project_id_prompt = "\nEnter Project #: "
     project_id = raw_input(get_project_id_prompt)

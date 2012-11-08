@@ -2,11 +2,10 @@ import requests
 import json
 import time
 import datetime
+import sys
 
 def print_welcome_message():
     print "\nFreckle CLI v0.1: The Luddite's Preferred Time Tracking Interface.\n"
-    print "Select a project to work on. Choose wisely.\n"
-    print "Loading projects..."
 
 class FreckleApi(object):
    def __init__(self, arg1, arg2):
@@ -36,7 +35,11 @@ class FreckleApi(object):
         files = {'file': xml_entry}
 
         r = requests.post(url, headers=headers, files=files) 
-        return
+        
+        if r.headers['status'] == '201 Created':
+            return True
+        
+        return False
 
    def get_all_users(self):
         url = self.base_url + '/users.json' 
@@ -58,9 +61,9 @@ class FreckleApi(object):
         url = self.base_url + '/entries.json' 
         headers = {'X-FreckleToken': self.api_key}
 
-        search_string = {'search[people]' : str(user_id), 'search[from]' : '2012-11-06'} 
+        search_params = {'search[people]' : str(user_id), 'search[from]' : '2012-11-06'} 
         
-        r = requests.get(url, headers=headers, params=search_string)
+        r = requests.get(url, headers=headers, params=search_params)
         all_time_entries = r.json
        
         time_spent = 0
@@ -121,9 +124,53 @@ def generate_xml_post(minutes, user, project_num, tags='development'):
                     </entry>
                 '''
     return xml_post
-    
-def time_tracker():
 
+class Text_Command(object):
+    def __init__(self, arg1, arg2):
+        self.name = arg1 
+        self.description = arg2
+
+all_valid_commands = []
+
+all_valid_commands.append( Text_Command('howmuch', "'howmuch' to see time logged so far today") )
+all_valid_commands.append( Text_Command('timer', "'timer' to access timer function") )
+all_valid_commands.append( Text_Command('quit', "'quit' to quit and exit") )
+
+def main_menu_input(all_projects_object):
+
+    valid_inputs = []
+    main_menu_prompt = "\nEnter: "
+
+    for commands in all_valid_commands:
+        # populate the valid inputs list
+        valid_inputs.append( commands.name )
+
+        # build the commands menu
+        main_menu_prompt += "\n - " + commands.description
+
+    main_menu_prompt += "\n : "
+
+    main_menu_input = str(raw_input(main_menu_prompt)) 
+        
+    while not main_menu_input in valid_inputs:
+        print "\nPlease enter a valid command."
+        main_menu_input = str(raw_input(main_menu_prompt)) 
+    
+    if main_menu_input == 'howmuch':
+        # call get_time_spent_today 
+        print "dunno"
+
+    if main_menu_input == 'timer':
+        time_tracker(all_projects_object)
+
+    if main_menu_input == 'quit':
+        sys.exit()
+
+def time_tracker(all_projects_object):
+    print "Select a project to work on. Choose wisely.\n"
+    print "Loading projects..."
+    print_project_menu(all_projects_object)
+    
     tracker_vals = ['start', 'stop']
     tracker_prompt = "\nEnter: \n - 'start' to start the timer \n - 'stop' to stop the timer \n: "
 

@@ -5,7 +5,7 @@ import datetime
 import sys
 
 def print_welcome_message():
-    print "\nFreckle CLI v0.1: The Luddite's Preferred Time Tracking Interface.\n"
+    print "\nFreckle CLI v0.1: The Luddite's Preferred Time Tracking Interface."
 
 class FreckleApi(object):
    def __init__(self, arg1, arg2):
@@ -57,11 +57,17 @@ class FreckleApi(object):
             if users[u'user'][u'email'] == email:
                 return users[u'user'][u'id']
            
-   def get_time_spent_today(self, user_id):
+   def get_current_date(self):
+       now = datetime.datetime.now()
+       return now.strftime("%Y-%m-%d")  
+   
+   def get_time_spent_today(self, user):
         url = self.base_url + '/entries.json' 
         headers = {'X-FreckleToken': self.api_key}
+        current_date = self.get_current_date()
+        user_id = self.extract_current_user(user)
 
-        search_params = {'search[people]' : str(user_id), 'search[from]' : '2012-11-06'} 
+        search_params = {'search[people]' : str(user_id), 'search[from]' : current_date} 
         
         r = requests.get(url, headers=headers, params=search_params)
         all_time_entries = r.json
@@ -124,47 +130,6 @@ def generate_xml_post(minutes, user, project_num, tags='development'):
                     </entry>
                 '''
     return xml_post
-
-class Text_Command(object):
-    def __init__(self, arg1, arg2):
-        self.name = arg1 
-        self.description = arg2
-
-all_valid_commands = []
-
-all_valid_commands.append( Text_Command('howmuch', "'howmuch' to see time logged so far today") )
-all_valid_commands.append( Text_Command('timer', "'timer' to access timer function") )
-all_valid_commands.append( Text_Command('quit', "'quit' to quit and exit") )
-
-def main_menu_input(all_projects_object):
-
-    valid_inputs = []
-    main_menu_prompt = "\nEnter: "
-
-    for commands in all_valid_commands:
-        # populate the valid inputs list
-        valid_inputs.append( commands.name )
-
-        # build the commands menu
-        main_menu_prompt += "\n - " + commands.description
-
-    main_menu_prompt += "\n : "
-
-    main_menu_input = str(raw_input(main_menu_prompt)) 
-        
-    while not main_menu_input in valid_inputs:
-        print "\nPlease enter a valid command."
-        main_menu_input = str(raw_input(main_menu_prompt)) 
-    
-    if main_menu_input == 'howmuch':
-        # call get_time_spent_today 
-        print "dunno"
-
-    if main_menu_input == 'timer':
-        time_tracker(all_projects_object)
-
-    if main_menu_input == 'quit':
-        sys.exit()
 
 def time_tracker(all_projects_object):
     print "Select a project to work on. Choose wisely.\n"

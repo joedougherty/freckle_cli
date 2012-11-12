@@ -3,6 +3,47 @@ from ConfigParser import SafeConfigParser
 import os
 import sys
 
+class Text_Command(object):
+    def __init__(self, arg1, arg2):
+        self.name = arg1 
+        self.description = arg2
+
+all_valid_commands = []
+
+all_valid_commands.append( Text_Command('howmuch', "'howmuch' to see time logged so far today") )
+all_valid_commands.append( Text_Command('timer', "'timer' to access timer function") )
+all_valid_commands.append( Text_Command('quit', "'quit' to quit and exit") )
+
+def main_menu_input(all_projects_object, api_object, user):
+
+    valid_inputs = []
+    main_menu_prompt = "\nEnter: "
+
+    for commands in all_valid_commands:
+        # populate the valid inputs list
+        valid_inputs.append( commands.name )
+
+        # build the commands menu
+        main_menu_prompt += "\n - " + commands.description
+
+    main_menu_prompt += "\n : "
+
+    main_menu_input = str(raw_input(main_menu_prompt)) 
+        
+    while not main_menu_input in valid_inputs:
+        print "\nPlease enter a valid command."
+        main_menu_input = str(raw_input(main_menu_prompt)) 
+    
+    if main_menu_input == 'howmuch':
+        # Call get_time_spent_today 
+        print api_object.get_time_spent_today(user)                     
+
+    if main_menu_input == 'timer':
+        freckle_lib.time_tracker(all_projects_object)
+
+    if main_menu_input == 'quit':
+        sys.exit()
+
 # open config file
 parser = SafeConfigParser()
 parser.read('.freckle')
@@ -23,7 +64,7 @@ all_projects = api_object.get_all_projects()
 freckle_lib.print_welcome_message()
 
 # main menu
-freckle_lib.main_menu_input(all_projects)
+main_menu_input(all_projects, api_object, user)
 
 # get user input for which project to work on
 current_project_id = freckle_lib.get_project_id(all_projects)

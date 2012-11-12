@@ -35,7 +35,6 @@ def main_menu_input(all_projects_object, api_object, user):
         main_menu_input = str(raw_input(main_menu_prompt)) 
     
     if main_menu_input == 'howmuch':
-        # Call get_time_spent_today 
         print api_object.get_time_spent_today(user)                     
 
     if main_menu_input == 'timer':

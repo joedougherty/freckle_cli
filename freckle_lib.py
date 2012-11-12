@@ -75,7 +75,7 @@ class FreckleApi(object):
         time_spent = 0
         
         for entry in all_time_entries:
-            time_spent += int(entry[u'entry'][u'minutes'])
+            time_spent += float(entry[u'entry'][u'minutes'])
         
         # convert minutes to hours
         time_spent = time_spent / 60

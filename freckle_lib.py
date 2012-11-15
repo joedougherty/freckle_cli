@@ -135,6 +135,9 @@ def time_tracker(all_projects_object):
     print "Select a project to work on. Choose wisely.\n"
     print "Loading projects..."
     print_project_menu(all_projects_object)
+
+    # Get the project # to work on
+    get_project_id(all_projects_object)
     
     tracker_vals = ['start', 'stop']
     tracker_prompt = "\nEnter: \n - 'start' to start the timer \n - 'stop' to stop the timer \n: "

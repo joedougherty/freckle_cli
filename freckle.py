@@ -29,19 +29,22 @@ def main_menu_input(all_projects_object, api_object, user):
     main_menu_prompt += "\n : "
 
     main_menu_input = str(raw_input(main_menu_prompt)) 
-        
-    while not main_menu_input in valid_inputs:
-        print "\nPlease enter a valid command."
-        main_menu_input = str(raw_input(main_menu_prompt)) 
     
-    if main_menu_input == 'howmuch':
-        print api_object.get_time_spent_today(user)                     
-
-    if main_menu_input == 'timer':
-        freckle_lib.time_tracker(all_projects_object)
-
-    if main_menu_input == 'quit':
-        sys.exit()
+    while not main_menu_input == 'quit':
+        
+        while not main_menu_input in valid_inputs:
+            print "\nPlease enter a valid command."
+            main_menu_input = str(raw_input(main_menu_prompt)) 
+    
+        if main_menu_input == 'howmuch':
+            print api_object.get_time_spent_today(user)                     
+            main_menu_input = str(raw_input(main_menu_prompt)) 
+        
+        if main_menu_input == 'timer':
+            freckle_lib.time_tracker(all_projects_object)
+            main_menu_input = str(raw_input(main_menu_prompt)) 
+    
+    sys.exit()
 
 # open config file
 parser = SafeConfigParser()
@@ -64,9 +67,6 @@ freckle_lib.print_welcome_message()
 
 # main menu
 main_menu_input(all_projects, api_object, user)
-
-# get user input for which project to work on
-current_project_id = freckle_lib.get_project_id(all_projects)
 
 # store freckle project id 
 freckle_project_id = freckle_lib.get_freckle_project_id(all_projects, current_project_id)

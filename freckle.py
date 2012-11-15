@@ -10,9 +10,9 @@ class Text_Command(object):
 
 all_valid_commands = []
 
+all_valid_commands.append( Text_Command('timer', "'timer' to start interactive timer") )
 all_valid_commands.append( Text_Command('howmuch', "'howmuch' to see time logged so far today") )
-all_valid_commands.append( Text_Command('timer', "'timer' to access timer function") )
-all_valid_commands.append( Text_Command('quit', "'quit' to quit and exit") )
+all_valid_commands.append( Text_Command('quit', "'quit' to quit") )
 
 def main_menu(all_projects_object, api_object, user):
 

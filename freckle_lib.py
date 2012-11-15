@@ -142,8 +142,8 @@ def time_tracker(all_projects_object, user, api_object):
     # store freckle project id 
     freckle_project_id = get_freckle_project_id(all_projects_object, current_project_id)
     
-    tracker_vals = ['start', 'stop']
-    tracker_prompt = "\nEnter: \n - 'start' to start the timer \n - 'stop' to stop the timer \n: "
+    tracker_vals = ['start', 'stop', 'discard']
+    tracker_prompt = "\nEnter: \n - 'start' to start the timer \n - 'stop' to stop the timer \n - 'discard' to stop timer and discard time \n: "
 
     # flag to maintain timer state
     start_has_fired = False
@@ -165,7 +165,7 @@ def time_tracker(all_projects_object, user, api_object):
                 print "\nPlease only enter 'start' once."     
     
         if tracker == 'stop':
-            if start_has_fired == True:
+            if start_has_fired:
                 elapsed_time = time.time() - start_time
                 elapsed_time = elapsed_time/60
 
@@ -173,7 +173,18 @@ def time_tracker(all_projects_object, user, api_object):
                 break
             else:
                 print "\nYou need to start tracking time first."
-                
+
+        if tracker == 'discard':
+            if start_has_fired:
+                confirm = str(raw_input("You're sure? y/n :"))
+
+                if confirm == 'y':
+                    break
+                else:
+                    continue    
+            else:
+                print "\nYou need to start tracking time before it can be discarded."
+
     # create the time entry we'll pass to api_object
     time_entry = generate_xml_post(elapsed_time, user, freckle_project_id) 
 

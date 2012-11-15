@@ -2,7 +2,7 @@
 Provides a command-line timer for http://www.letsfreckle.com
  
 ## Configuration File
-freckle.py depends on a short config file called named `.freckle`.  It should reside in the same folder as freckle.py.
+freckle.py depends on a short config file named `.freckle`.  It should reside in the same folder as freckle.py.
 
 ### Example config file
     [freckle_credentials] 

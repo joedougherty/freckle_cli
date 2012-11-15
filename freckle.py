@@ -14,7 +14,7 @@ all_valid_commands.append( Text_Command('howmuch', "'howmuch' to see time logged
 all_valid_commands.append( Text_Command('timer', "'timer' to access timer function") )
 all_valid_commands.append( Text_Command('quit', "'quit' to quit and exit") )
 
-def main_menu_input(all_projects_object, api_object, user):
+def main_menu(all_projects_object, api_object, user):
 
     valid_inputs = []
     main_menu_prompt = "\nEnter: "
@@ -41,7 +41,7 @@ def main_menu_input(all_projects_object, api_object, user):
             main_menu_input = str(raw_input(main_menu_prompt)) 
         
         if main_menu_input == 'timer':
-            freckle_lib.time_tracker(all_projects_object)
+            freckle_lib.time_tracker(all_projects_object, user, api_object)
             main_menu_input = str(raw_input(main_menu_prompt)) 
     
     sys.exit()
@@ -62,21 +62,8 @@ api_object = freckle_lib.FreckleApi(base_url, api_key)
 # load all projects
 all_projects = api_object.get_all_projects()
 
-# welcome message
+# print welcome message
 freckle_lib.print_welcome_message()
 
 # main menu
-main_menu_input(all_projects, api_object, user)
-
-# store freckle project id 
-freckle_project_id = freckle_lib.get_freckle_project_id(all_projects, current_project_id)
-
-# create the time entry we'll pass to api_object
-time_entry = freckle_lib.generate_xml_post(time_spent, user, freckle_project_id) 
-
-# make post request
-if api_object.create_time_entry(time_entry):
-    print "New time entry has been created."
-else:
-    print "Service could not be reached."
-
+main_menu(all_projects, api_object, user)

@@ -131,13 +131,16 @@ def generate_xml_post(minutes, user, project_num, tags='development'):
                 '''
     return xml_post
 
-def time_tracker(all_projects_object):
+def time_tracker(all_projects_object, user, api_object):
     print "Select a project to work on. Choose wisely.\n"
     print "Loading projects..."
     print_project_menu(all_projects_object)
 
     # Get the project # to work on
-    get_project_id(all_projects_object)
+    current_project_id = get_project_id(all_projects_object)
+    
+    # store freckle project id 
+    freckle_project_id = get_freckle_project_id(all_projects_object, current_project_id)
     
     tracker_vals = ['start', 'stop']
     tracker_prompt = "\nEnter: \n - 'start' to start the timer \n - 'stop' to stop the timer \n: "
@@ -167,6 +170,16 @@ def time_tracker(all_projects_object):
                 elapsed_time = elapsed_time/60
 
                 print str(elapsed_time) + " minutes spent on task."
-                return elapsed_time
+                break
             else:
-                print "\nYou need to start tracking time first." 
+                print "\nYou need to start tracking time first."
+                
+    # create the time entry we'll pass to api_object
+    time_entry = generate_xml_post(elapsed_time, user, freckle_project_id) 
+
+    # make post request
+    if api_object.create_time_entry(time_entry):
+        print "New time entry has been created."
+    else:
+        print "Service could not be reached."
+ 

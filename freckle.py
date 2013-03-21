@@ -2,6 +2,7 @@ import freckle_lib
 from ConfigParser import SafeConfigParser
 import os
 import sys
+import argparse
 
 class Text_Command(object):
     def __init__(self, arg1, arg2):
@@ -14,6 +15,17 @@ all_valid_commands.append( Text_Command('howmuch', "'howmuch' to see time logged
 all_valid_commands.append( Text_Command('timer', "'timer' to access timer function") )
 all_valid_commands.append( Text_Command('quit', "'quit' to quit and exit") )
 
+def freckle_init(all_projects_object, api_object, user):
+    parser = argparse.ArgumentParser(description='Get tracked time')
+    parser.add_argument("--total", help="return total time tracked today (in hrs)", action="store_true")
+    args = parser.parse_args()
+
+    if args.total:
+        hrs = api_object.get_time_spent_today(user)
+        hrs = hrs.split(" ")
+        print hrs[0]                     
+        sys.exit()
+        
 def main_menu(all_projects_object, api_object, user):
 
     valid_inputs = []
@@ -48,7 +60,7 @@ def main_menu(all_projects_object, api_object, user):
 
 # open config file
 parser = SafeConfigParser()
-parser.read('.freckle')
+parser.read('/home/joe/.freckle')
 
 # Connection details
 base_url = parser.get('freckle_credentials', 'base_url') 
@@ -61,6 +73,9 @@ api_object = freckle_lib.FreckleApi(base_url, api_key)
 
 # load all projects
 all_projects = api_object.get_all_projects()
+
+# check if freckle was called with optional params
+freckle_init(all_projects, api_object, user)
 
 # print welcome message
 freckle_lib.print_welcome_message()
